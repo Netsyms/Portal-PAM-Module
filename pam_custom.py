@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
     pam-custom
@@ -39,7 +39,7 @@ def totp_check(user, pamh):
   resp = requests.post(api_url, data=req)
   if resp.json()['status'] == "OK":
     if resp.json()['otp'] == True:
-      otpmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_OFF, "[Portal] enter 2-factor auth code for " + user + ": ")
+      otpmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_ON, "[Portal] enter 2-factor auth code for " + user + ": ")
       rsp = pamh.conversation(otpmsg)
       otpcode = rsp.resp
       return totp_verify(user, otpcode)
