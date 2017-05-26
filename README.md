@@ -1,17 +1,8 @@
-pam-custom
-==========
+# PAM for Portal
+This is a simple project with the goal of allowing Linux PAM authentication using the Portal API.
 
-This is a collection of instructions and simple example scripts to help
-customize the login to a Linux box with pam, using *libpam-python* and/or
-*libpam-script*.
 
-It is a work-in-progress, and new ideas and hints are welcome.
-
-The instructions and the scripts have been tested with Ubuntu 12.04 LTS.
-Run them at your risk.
-
-Installation
-------------
+## Installation
 
 Since working with PAM can lead to problems in authentication, keep a
 shell with root access open while experimenting.
