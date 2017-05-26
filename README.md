@@ -1,5 +1,5 @@
 # PAM for Portal
-This is a simple project with the goal of allowing Linux PAM authentication using the Portal API.
+This is a simple project with the goal of allowing Linux PAM authentication using the Portal API.  Use at your own risk.
 
 
 ## Installation
@@ -11,9 +11,11 @@ Install the package libpam-python:
 
     sudo apt-get install libpam-python
     
-Copy the provided `pam_custom.py` and `pam_custom.sh` in `/lib/security`:
+Edit `pam_custom.py` and supply the Portal API URL and a valid API key.
+    
+Copy the provided `pam_custom.py` to `/lib/security`:
 
-    sudo cp pam_custom.py pam_custom.sh /lib/security 
+    sudo cp pam_custom.py /lib/security 
 
 Make a backup of the file `/etc/pam.d/common-auth`:
 
@@ -23,22 +25,26 @@ Edit the file `/etc/pam.d/common-auth` introducing a line in which you
 declare your custom authentication method. It should be something like
 this:
 
-    auth  [success=2 default=ignore] pam_python.so pam_custom.py /lib/security/pam_custom.sh
+    auth  [success=1 default=ignore] pam_python.so pam_custom.py
 
 and should be put just before (or after, according to your needs) the
 other authentication methods.
 
 Some explanations:
 
-1. "success=2" means that the 2 following lines should be skipped in case of success (edit as needed)
+1. "success=2" means that the next line should be skipped in case of success (edit as needed)
 
-1. "pam_python.so" is the name of the shared object that will be called by pam
+2. "pam_python.so" is the name of the shared object that will be called by pam
 
-1. "pam_custom.py" is the script in python that we provide
+3. "pam_custom.py" is the script in python that we provide
 
-1. "/lib/security/pam_custom.sh" is the bash script that is called by the python script (if needed)
+### Sample /etc/pam.d/common-auth
 
-Edit the file `/lib/security/pam_custom.sh` according to your needs. It is a bash script that
-receives username and password as command line arguments, and must exit with 0 if the authentication
-is to be granted, or a non-zero value otherwise.
+This config file will gather the username and password and attempt a normal login.  If that fails, PAM will try to process the login via this module.
 
+<code>
+    auth    [success=2 default=ignore]      pam_unix.so nullok_secure
+    auth    [success=1 default=ignore]      pam_python.so pam_custom.py
+    auth    requisite                       pam_deny.so
+    auth    required                        pam_permit.so
+</code>
