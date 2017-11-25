@@ -23,7 +23,7 @@ import os
 import requests
 import json
 
-api_url = "http://localhost/portal/api.php"
+api_url = "http://localhost/accounthub/api.php"
 api_key = "123"
 
 def totp_verify(user, totp):
@@ -39,7 +39,7 @@ def totp_check(user, pamh):
   resp = requests.post(api_url, data=req)
   if resp.json()['status'] == "OK":
     if resp.json()['otp'] == True:
-      otpmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_ON, "[Portal] enter 2-factor auth code for " + user + ": ")
+      otpmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_ON, "[AccouhtHub] enter 2-factor auth code for " + user + ": ")
       rsp = pamh.conversation(otpmsg)
       otpcode = rsp.resp
       return totp_verify(user, otpcode)
@@ -69,7 +69,7 @@ def pam_sm_authenticate(pamh, flags, argv):
     password = pamh.authtok
     if password == None:
       ## got no password in authtok - trying through conversation...
-      passmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_OFF, "[Portal] enter password for " + user + ": ")
+      passmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_OFF, "[AccountHub] enter password for " + user + ": ")
       rsp = pamh.conversation(passmsg)
       password = rsp.resp
       # so we should at this point have the password either through the
