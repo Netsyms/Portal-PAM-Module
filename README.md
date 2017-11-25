@@ -1,5 +1,5 @@
-# PAM for Portal
-This is a simple project with the goal of allowing Linux PAM authentication using the Portal API.  Use at your own risk.
+# PAM for Business Apps
+This is a simple project with the goal of allowing Linux PAM authentication using the AccountHub API.  Use at your own risk.
 
 
 ## Installation
