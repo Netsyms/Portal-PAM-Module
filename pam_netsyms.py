@@ -3,7 +3,7 @@
 '''
     pam-custom
     Copyright (C) 2013 Loris Tisisno <loris.tissino@gmail.com>
-    Copyright (C) 2017 Netsyms Technologies <admin@netsyms.com>
+    Copyright (C) 2017-2018 Netsyms Technologies <contact@netsyms.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,9 +22,24 @@
 import os
 import requests
 import json
+import pwd
+import crypt
+import sys
 
-api_url = "http://localhost/accounthub/api.php"
+api_url = "http:///accounthub/api.php"
 api_key = "123"
+
+def load_settings():
+  global api_url
+  global api_key
+  if os.path.isfile("/etc/netsyms-business/config.json"):
+    with open("/etc/netsyms-business/config.json") as f:
+      text = f.read()
+      data = json.loads(text)
+      api_url = data['apiurl']
+      api_key = data['apikey']
+
+
 
 def totp_verify(user, totp):
   req = {"key": api_key, "action": "verifytotp", "username": user, "code": totp}
@@ -39,7 +54,7 @@ def totp_check(user, pamh):
   resp = requests.post(api_url, data=req)
   if resp.json()['status'] == "OK":
     if resp.json()['otp'] == True:
-      otpmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_ON, "[AccouhtHub] enter 2-factor auth code for " + user + ": ")
+      otpmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_ON, "Authentication code: ")
       rsp = pamh.conversation(otpmsg)
       otpcode = rsp.resp
       return totp_verify(user, otpcode)
@@ -47,20 +62,32 @@ def totp_check(user, pamh):
       return True
   return False
 
-def portal_auth(user, password, pamh):
+
+def try_adduser(user, password):
+  try:
+    pwd.getpwnam(user)
+  except KeyError:
+    print('User ' + user + ' does not exist on this machine, creating...')
+    # stick this in if you want offline auth, but it isn't updated if the pwd changes in AccountHub
+    # -p $(mkpasswd -m sha-512 \"" + password + "\")
+    os.system("useradd -s "+ "/bin/bash "+ "-d "+ "/home/" + user + " -m " + user)
+
+
+def accounthub_auth(user, password, pamh):
   req = {"key": api_key, "action": "auth", "username": user, "password": password}
   resp = requests.post(api_url, data=req)
   if resp.json()['status'] == "OK":
-     return totp_check(user, pamh)
+    if totp_check(user, pamh):
+      try_adduser(user, password)
+      return True
+    else:
+      return False
   else:
     return False
 
 
 def pam_sm_authenticate(pamh, flags, argv):
-
-# the basic idea for getting the password via pam.conversation comes from
-# http://benctechnicalblog.blogspot.it/2011/05/pam-python-module-for-out-of-band.html
-
+  load_settings()
   try:
     user = pamh.get_user(None)
     if user == None:
@@ -69,13 +96,13 @@ def pam_sm_authenticate(pamh, flags, argv):
     password = pamh.authtok
     if password == None:
       ## got no password in authtok - trying through conversation...
-      passmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_OFF, "[AccountHub] enter password for " + user + ": ")
+      passmsg = pamh.Message(pamh.PAM_PROMPT_ECHO_OFF, "Password for " + user + ": ")
       rsp = pamh.conversation(passmsg)
       password = rsp.resp
       # so we should at this point have the password either through the
       # prompt or from previous module
 
-    if portal_auth(user, password, pamh):
+    if accounthub_auth(user, password, pamh):
       return pamh.PAM_SUCCESS
     else:
       return pamh.PAM_AUTH_ERR
