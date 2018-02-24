@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Comment=Connect this machine to AccountHub for user authentication.
+Exec=gksu --message "Enter your password to setup cloud login." "dpkg-reconfigure --frontend=gnome netsyms-pam-auth"
+Name=Configure Cloud Login
+Type=Application
+Categories=System;Settings
+Terminal=false

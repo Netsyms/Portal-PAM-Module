@@ -1,0 +1,13 @@
+Package: netsyms-pam-auth
+Version: 0.2
+Installed-Size: 96
+Maintainer: Netsyms Technologies <contact@netsyms.com>
+Section: admin
+Homepage: https://source.netsyms.com/Business/BizApps-PAM-Module
+Architecture: all
+Priority: optional
+Depends: libpam-python
+Pre-Depends: debconf (>=0.2.17)
+Description: PAM for Business Apps
+ A simple PAM authentication module for authenticating Linux users against the AccountHub API.
+

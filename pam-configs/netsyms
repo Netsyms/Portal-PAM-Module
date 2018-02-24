@@ -1,0 +1,7 @@
+Name: Netsyms Business Apps authentication
+Default: no
+Priority: 256
+Auth-Type: Primary
+Auth:
+    [success=end default=ignore]    pam_python.so pam_netsyms.py
+

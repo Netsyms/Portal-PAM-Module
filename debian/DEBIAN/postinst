@@ -1,0 +1,17 @@
+#!/bin/sh -e
+. /usr/share/debconf/confmodule
+
+db_input high netsyms-business/apiurl || true
+db_go || true
+
+db_get netsyms-business/apiurl || true
+APIURL=$RET || true
+
+db_input high netsyms-business/apikey || true
+db_go || true
+
+db_get netsyms-business/apikey || true
+APIKEY=$RET
+
+mkdir -p /etc/netsyms-business
+echo "{\"apiurl\":\"$APIURL\",\"apikey\":\"$APIKEY\"}" > /etc/netsyms-business/config.json

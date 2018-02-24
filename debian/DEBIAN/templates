@@ -1,0 +1,9 @@
+Template: netsyms-business/apiurl
+Type: string
+Default: 
+Description: Enter the AccountHub API URL.
+
+Template: netsyms-business/apikey
+Type: string
+Default: 
+Description: Enter an AccountHub API key.

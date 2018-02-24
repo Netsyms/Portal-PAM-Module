@@ -1,0 +1,4 @@
+27f6adccaf3fd2822597cf74d61bb8b7  usr/share/pam-configs/netsyms
+97ff9683aa36f333c7d2295d6520090f  usr/share/doc/netsyms-pam-auth/copyright
+ab11657754f17c6603aecbf019ecec1d  usr/share/doc/netsyms-pam-auth/changelog.gz
+214415415757cc5d725e5d4c61378682  lib/security/pam_netsyms.py
