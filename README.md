@@ -16,8 +16,12 @@ Edit `pam_netsyms.py` and supply the Portal API URL and a valid API key.
 Copy the provided `pam_netsyms.py` to `/lib/security`:
 
     sudo cp pam_netsyms.py /lib/security 
+    
+### Packages
 
-### Recommended Install
+You can install this project on Ubuntu/Debian-based systems.  Simply add [this repository](https://repo.netsyms.com/) and install `netsyms-pam-auth`.  You will be asked for a Business Apps server URL and API key during the install process.
+
+### Install
 
 Make a file `/usr/share/pam-configs/netsyms` with the following content:
 
