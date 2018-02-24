@@ -26,7 +26,7 @@ import pwd
 import crypt
 import sys
 
-api_url = "http:///accounthub/api.php"
+api_url = "http://localhost/accounthub/api.php"
 api_key = "123"
 
 def load_settings():
